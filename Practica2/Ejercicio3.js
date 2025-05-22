@@ -12,4 +12,5 @@ personas.forEach(persona => {
 });
 
 const reduce = personas.reduce((acumulador,persona) => acumulador + persona.edad,0);
+
 console.log(reduce);
