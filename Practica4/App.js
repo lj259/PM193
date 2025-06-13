@@ -1,22 +1,26 @@
 /*Zona de importaciones */
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { useState } from 'react';
 
-const Texto =(props)=>{
-  const {children} = props;
+const Texto =()=>{
+  const [contenido,setContenido] = useState('Hola Mundo')
+  const actualizaTexto =()=>{setContenido('Estado Modificado')}
   return(
-    <Text>{children}</Text>
+    <Text onPress={actualizaTexto}>{contenido}</Text>
   )
 }
 
 /*Zona de ejecucion */
 export default function App() {
+  const [botonTexto, setBotonTexto] = useState('Presionar');
+  const cambiarTextoBoton =()=>setBotonTexto('boton presionado');
   return (
     <View style={styles.container}>
       <Texto>Hola </Texto>
       <Texto>mundo</Texto>
       <Texto>React Native</Texto>
-      <Button title="Presionar"></Button>
+      <Button title={botonTexto} onPress={cambiarTextoBoton}></Button>
       <StatusBar style="auto" />
     </View>
   );
