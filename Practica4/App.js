@@ -3,11 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useState } from 'react';
 
-const Texto =()=>{
+const Texto =({style})=>{
   const [contenido,setContenido] = useState('Hola Mundo')
   const actualizaTexto =()=>{setContenido('Estado Modificado')}
   return(
-    <Text onPress={actualizaTexto}>{contenido}</Text>
+    <Text  style={[styles.Text,style]} onPress={actualizaTexto}>{contenido}</Text>
   )
 }
 
@@ -17,10 +17,10 @@ export default function App() {
   const cambiarTextoBoton =()=>setBotonTexto('boton presionado');
   return (
     <View style={styles.container}>
-      <Texto>Hola </Texto>
-      <Texto>mundo</Texto>
-      <Texto>React Native</Texto>
-      <Button title={botonTexto} onPress={cambiarTextoBoton}></Button>
+      <Texto style={styles.Naranja}>Hola </Texto>
+      <Texto style={styles.Amarillo}>mundo</Texto>
+      <Texto style={styles.Verde}>React Native</Texto>
+      {/* <Button title={botonTexto} onPress={cambiarTextoBoton}></Button> */}
       <StatusBar style="auto" />
     </View>
   );
@@ -31,7 +31,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'strech', //Izquierda a derecha
+    justifyContent: 'center', //Arriba a abajo
+  },
+  Text: {
+    color: 'white',
+    fontSize: 20,
+  },
+  Naranja: {
+    backgroundColor: 'orange',
+  },
+  Amarillo: {
+    backgroundColor: 'yellow',
+  },
+  Verde: {
+    backgroundColor: 'green',
   },
 });
