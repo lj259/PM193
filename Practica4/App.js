@@ -3,26 +3,39 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useState } from 'react';
 
-const Texto =({style})=>{
-  const [contenido,setContenido] = useState('Hola Mundo')
-  const actualizaTexto =()=>{setContenido('Estado Modificado')}
-  return(
-    <Text  style={[styles.Text,style]} onPress={actualizaTexto}>{contenido}</Text>
-  )
-}
+import { Alert, ScrollView, TouchableOpacity,TouchableHighlight, TouchableNativeFeedback, Pressable, Switch } from 'react-native'; //practica 8
+import {Button as Buttonpaper, Provider as ProveedorPaper} from 'react-native-paper';
+import {Button as ButtonElements} from 'react-native-elements';
+
+
 
 /*Zona de ejecucion */
 export default function App() {
-  const [botonTexto, setBotonTexto] = useState('Presionar');
-  const cambiarTextoBoton =()=>setBotonTexto('boton presionado');
+  const [ModoOscuro, setModoOscuro] = useState(false);
+
+  const alternarModoOscuro = () => setModoOscuro(previo => !previo);
   return (
-    <View style={styles.container}>
-      <Texto style={styles.Naranja}>Hola </Texto>
-      <Texto style={styles.Amarillo}>mundo</Texto>
-      <Texto style={styles.Verde}>React Native</Texto>
-      {/* <Button title={botonTexto} onPress={cambiarTextoBoton}></Button> */}
-      <StatusBar style="auto" />
+  <ProveedorPaper>
+    <ScrollView contentContainerStyle={styles.ScrollContainer}>
+      <View style={[styles.container, { backgroundColor: ModoOscuro ? '#333' : '#fff' }]}>
+      </View>
+      <View style={styles.container}>
+        <Text style={styles.title}>Modo de pantalla: {ModoOscuro ? 'oscuro' : 'claro'}</Text>
+        <Switch value={ModoOscuro} onValueChange={alternarModoOscuro} />
+      </View>
+    </ScrollView>
+
+    {/* Botton 1 */}
+     <View style={styles.section}>
+      <Text style={styles.title}>Primer boton</Text>
+      <Button
+        tittle="Boton Nativo"
+        color="#841584"
+        onPress={() => window.alert('Boton Nativo precionado')}>
+
+      </Button>
     </View>
+  </ProveedorPaper>
   );
 }
 
@@ -31,20 +44,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'strech', //Izquierda a derecha
+    alignItems: 'center', //Izquierda a derecha
     justifyContent: 'center', //Arriba a abajo
+    paddingHorizontal: 16,
+    paddingBottom: 50,
   },
-  Text: {
-    color: 'white',
-    fontSize: 20,
+  title: {
+    fontSize: 16,
+    marginVertical: 6,
+    textAlign: 'center',
+    color: '#000',
   },
-  Naranja: {
-    backgroundColor: 'orange',
-  },
-  Amarillo: {
-    backgroundColor: 'yellow',
-  },
-  Verde: {
-    backgroundColor: 'green',
-  },
+  section:{
+    marginVertical: 15,
+    textAlign: 'center',
+    width: '100%',
+  }
 });
