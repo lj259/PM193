@@ -1,95 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react'; //Importamos useeffect y useState
-import { ActivityIndicator, FlatList, SafeAreaView } from 'react-native'; //Importamos activityIndicator
+import React, { useState, useEffect, use } from 'react';
 
-const App = () => {
-  const [ loading, setLoading ] = useState(true);
-  const [ users, setUsers ] = useState([]);
+import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
+
+export default function App() {
+  const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      fetch('https://jsonplaceholder.typicode.com/users')
-      .then(resp => resp.json())
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch(err => { 
-      console.error('Error al cargar usuarios: ', err);
-      setLoading(false);
-      });
-    }, 2000);
+    fetch('http://localhost:8000/nombres')
+      .then(res => res.json())
+      .then(data => setPersonas(data))
+      .catch(err => console.error('Error fetching data:', err));
   }, []);
 
+  //Datos Flatlist
+  const flatData = personas.map((p, index) => ({
+    key: index.toString(),
+    nombre: p.Nombre,
+    apellido: p.Apellido
+  }));
 
-const renderItem = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.name}> {item.name} </Text>
-    <Text style={styles.text}> {item.email} </Text>
-    <Text style={styles.text}> {item.address.city} </Text>
-    <Text style={styles.text}> {item.company.name} </Text>
-  </View>
-);
+  //Datos SectionList
+  const sectionData = personas.map((p, index) => ({
+    title: p.Apellido,
+    data: [p.Nombre]
+  }));
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Si aun esta cargando, se muestra el indicador de carga */}
-      {loading ? (
-        <View style= {styles.loadingContainer}>
-          <ActivityIndicator
-            size= "large"
-            color= "#007bff" 
-          />
-          <Text style={styles.loadingText}> Cargando usuarios... </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={users}
-          keyExtractor= { item => item.id.toString() }
-          renderItem= { renderItem }
-          contentContainerStyle= { styles.list }
-          />
-      )}
-    </SafeAreaView>
+  return(
+    <View style={styles.container}>
+      <Text style={styles.title}>Solo nombres (FlatList)</Text>
+      <FlatList
+        data={flatData}
+        renderItem={({ item }) => (
+          <Text style={styles.item}>{item.apellido}, {item.nombre}</Text>
+        )}
+        keyExtractor={item => item.key} />
+        {/* Esto es para SectionList */}
+        <Text style={styles.title}>SectionList - Agrupado por Apellido</Text> {/* Muestra el título */}
+        <SectionList
+          sections={sectionData} /* Se pasan los datos a mostrar en la SectionList */
+          keyExtractor={(item, index) => item + index} /* Se identifica de manera unica el item, Andrea0, Carol1 */
+          renderItem={({ item }) => <Text style={styles.item}>{item}</Text>} /* defino cada elemento de una sección (nombres)*/
+          renderSectionHeader={({ section: { title } }) => ( /* defino como mostrar cada seccion (apellidos) */
+            <Text style={styles.header}>{title}</Text>
+          )} />
+      </View>
   );
-};
+}
 
+// Son los estilos que le dare a la interfaz
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  loadingContainer:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 12, 
-    fontSize: 16,
-    color: '#333',
-  },
-  list: {
-    paddingBottom: 20,
-  },
-  card: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 2,
-  },
-  name : {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  text: {
-    fontSize: 14,
-    color: '#333',
-    marginTop: 2,
-  },
+  container: { flex: 1, paddingTop: 50, paddingHorizontal: 20 },
+  title: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
+  item: { padding: 10, fontSize: 16 },
+  header: { fontSize: 18, fontWeight: 'bold', backgroundColor: '#ddd', padding: 5 },
 });
-
-export default App;
