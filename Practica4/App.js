@@ -1,56 +1,75 @@
-import React, { useState, useEffect, use } from 'react';
-
-import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { Modal, Text, View, StyleSheet, Button, Pressable } from 'react-native';
 
 export default function App() {
-  const [personas, setPersonas] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    fetch('http://localhost:8000/nombres')
-      .then(res => res.json())
-      .then(data => setPersonas(data))
-      .catch(err => console.error('Error fetching data:', err));
-  }, []);
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
 
-  //Datos Flatlist
-  const flatData = personas.map((p, index) => ({
-    key: index.toString(),
-    nombre: p.Nombre,
-    apellido: p.Apellido
-  }));
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
-  //Datos SectionList
-  const sectionData = personas.map((p, index) => ({
-    title: p.Apellido,
-    data: [p.Nombre]
-  }));
-
-  return(
+  return (
     <View style={styles.container}>
-      <Text style={styles.title}>Solo nombres (FlatList)</Text>
-      <FlatList
-        data={flatData}
-        renderItem={({ item }) => (
-          <Text style={styles.item}>{item.apellido}, {item.nombre}</Text>
-        )}
-        keyExtractor={item => item.key} />
-        {/* Esto es para SectionList */}
-        <Text style={styles.title}>SectionList - Agrupado por Apellido</Text> {/* Muestra el título */}
-        <SectionList
-          sections={sectionData} /* Se pasan los datos a mostrar en la SectionList */
-          keyExtractor={(item, index) => item + index} /* Se identifica de manera unica el item, Andrea0, Carol1 */
-          renderItem={({ item }) => <Text style={styles.item}>{item}</Text>} /* defino cada elemento de una sección (nombres)*/
-          renderSectionHeader={({ section: { title } }) => ( /* defino como mostrar cada seccion (apellidos) */
-            <Text style={styles.header}>{title}</Text>
-          )} />
-      </View>
+      <Button title="Abrir modal" onPress={handleOpenModal} />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={handleCloseModal}
+        onShow={() => console.log("Modal abierto")}
+        onDismiss={() => console.log("Modal cerrado")}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Este es el contenido del modal</Text>
+            <Pressable style={styles.button} onPress={handleCloseModal}>
+              <Text style={styles.textStyle}>Cerrar Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
-// Son los estilos que le dare a la interfaz
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50, paddingHorizontal: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-  item: { padding: 10, fontSize: 16 },
-  header: { fontSize: 18, fontWeight: 'bold', backgroundColor: '#ddd', padding: 5 },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
